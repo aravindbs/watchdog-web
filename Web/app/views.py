@@ -19,7 +19,7 @@ import json
 import httplib, urllib, base64, yaml
 import re
 
-with open("/config.yaml", "r") as f:
+with open("config.yaml", "r") as f:
     config = yaml.load(f)
 
 block_blob_service = BlockBlobService(account_name = config['azure-blob']['account_name'], account_key= config['azure-blob']['account_key'])

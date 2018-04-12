@@ -3,7 +3,7 @@ import httplib, urllib, base64, json, yaml
 
 
 
-with open("../config.yaml", "r") as f:
+with open("config.yaml", "r") as f:
     config = yaml.load(f)
 
 
