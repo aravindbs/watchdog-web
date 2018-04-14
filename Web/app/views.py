@@ -10,9 +10,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from createGroup import createGroup
-from addPerson import addPerson
-from faceapi import addFace, addPerson, createGroup, trainFaces
-from trainFaces import trainFaces
+from faceapi import addFace, addPerson, createGroup, trainFaces, deletePerson
 #from .camera import *
 from azure.storage.blob import BlockBlobService , ContentSettings
 import json
@@ -43,8 +41,6 @@ def signup():
         db.session.add(user)
         db.session.commit()
 
-        print code
-
         login_user(user)
         flash('Registration Successful! You may now create your profile.' , 'success')
         return redirect(url_for('editProfile'))
@@ -74,7 +70,6 @@ def editProfile():
         form = EditProfileForm()
         if form.validate_on_submit():
             profile = Profile(username = current_user.username, first_name = form.first_name.data, last_name = form.last_name.data)
-            print profile
             db.session.add(profile)
             db.session.commit()
             return redirect(url_for('cameraDetails'))
@@ -82,9 +77,7 @@ def editProfile():
         form = EditProfileForm(obj=profile)
         form.populate_obj(profile)
         if form.validate_on_submit():
-            print "hey"
             profile = Profile(username = current_user.username, first_name = form.first_name, last_name = form.last_name)
-            print profile
             db.session.commit()
             return redirect(url_for('cameraDetails'))
     return render_template('editProfile.html', title='Edit Profile', form = form)
@@ -98,7 +91,6 @@ def dashboard():
     
     if form.validate_on_submit():
         date = form.date.data
-        print "hey"
         return redirect(url_for('chart' , date = date))
     return render_template('dashboard.html' ,  profile = profile , form = form )
 
@@ -135,11 +127,18 @@ def cameraDetails():
     return render_template('cameraDetails.html' , camera=camera, camcount=camcount )
 
 
-@app.route('/unAuth' , methods = ['GET' , 'POST'])
+@app.route('/unAuth<date>' , methods = ['GET' , 'POST'])
 @login_required
-def unAuth():
+def unAuth(date):
 
-    pics = UnauthImageGallery.query.filter_by(username = current_user.username).all()
+    pics = UnauthImageGallery.query.filter(UnauthImageGallery.timestamp.contains(date)).filter_by( username = current_user.username).all()
+    print pics 
+
+    if not pics: 
+        print "yes"
+        flash('No Security Breaches for selected date' , 'danger')
+        return redirect(url_for('dashboard'))
+    
     for pic in pics: 
         pic.timestamp = pic.timestamp[:16]
     return render_template('Unauth.html', pics = pics)
@@ -161,41 +160,34 @@ def uploadImages():
     for ppl in people: 
         photo = AuthImageGallery.query.filter_by(person_id = ppl.person_id).first()
         peopleDict[ppl] = photo
-    print peopleDict
+    """
+    form = AddPersonForm()
     
-    form = EditImageGalleryForm()
-
     if form.submit.data: #adding another person
         code = addPerson ( current_user.username, form.name.data, form.name.data)
         add_person = Persons(person_name = form.name.data, username = current_user.username, azure_id = code["personId"])
-        print code
-        print form.name.data
         db.session.add(add_person)
         db.session.commit()
         return redirect(url_for('addPics' , user = add_person.person_id))
+    """
+    return render_template('Auth.html' , peopleDict = peopleDict)
 
-    return render_template('Auth.html' , form = form, peopleDict = peopleDict)
-"""
-@app.route('/deleteImages', methods=['GET', 'POST'])
+@app.route('/addPeople', methods=['GET', 'POST'])
 @login_required
-def deleteImages():
-    pics = db.session.query(Persons.person_name, Persons.person_id, AuthImageGallery.imgid , AuthImageGallery.image_filename,AuthImageGallery.image_path).filter(Persons.person_id == AuthImageGallery.person_id, Persons.username == current_user.username).all()
-    print pics
-    delPics = []
-    if request.method == "POST":
-        delPics = request.form.getlist('users')
-    print delPics
-    if delPics:
-        for f in delPics:
-            print f
-            img = AuthImageGallery.query.filter_by(imgid = f).first()
-            block_blob_service.delete_blob('video', img.image_filename)
-            #os.remove(os.path.join(app.config['UPLOADED_IMAGES_DEST'], img.image_filename))
-            db.session.delete(img)
-            db.session.commit()
-        return redirect(url_for('uploadImages'))
-    return render_template('deleteImages.html' , pics = pics)
-"""
+def addPeople():
+    
+    form = AddPersonForm()
+
+    if form.validate_on_submit(): 
+        code = addPerson ( current_user.username, form.name.data, form.name.data)
+        print "hey" 
+        print code 
+        add_person = Persons(person_name = form.name.data, username = current_user.username, azure_id = code["personId"])
+        db.session.add(add_person)
+        db.session.commit()
+        return redirect(url_for('addPics' , user = add_person.person_id))
+        
+    return render_template('addPerson.html' , form = form)
 
 @app.route('/TrainFaces', methods=['GET', 'POST'])
 @login_required
@@ -206,10 +198,7 @@ def TrainFaces():
     for face in faces:
         addFace(str(face[0]) , str(face[2]), str(face[1]))
 
-
-
     code = trainFaces (current_user.username)
-    print code
     if code == 202:
         flash("Successfully Trained!",'success')
 
@@ -228,19 +217,19 @@ def TrainFaces():
 @app.route('/viewPerson/<user>' , methods = ['GET' , 'POST'])
 @login_required
 def viewPerson(user):
-    print user
+  
     listPics = AuthImageGallery.query.filter_by(person_id = user).all()
-    print listPics
+    
 
     delPics = []
     if request.method == "POST":
         delPics = request.form.getlist('users')
-    print delPics
+   
     if delPics:
         for f in delPics:
-            print f
+           
             img = AuthImageGallery.query.filter_by(imgid = f).first()
-            print img
+           
             block_blob_service.delete_blob('video', img.image_filename)
             
             #os.remove(os.path.join(app.config['UPLOADED_IMAGES_DEST'], img.image_filename))
@@ -251,7 +240,6 @@ def viewPerson(user):
     return render_template('deleteImages.html' , pics = listPics, user1 = user)
 
 
-
 @app.route('/addPics/<user>' , methods = ['GET' , 'POST'])
 @login_required
 def addPics(user):
@@ -259,21 +247,12 @@ def addPics(user):
     current_person = Persons.query.filter_by(person_id = user).first()
 
     form = EditImageGalleryForm()
-    """
-    if form.picture.data:
-        print "picture"
-        naam = current_person.person_name
-        takePicture(naam)
-    """
-
+   
     if form.skip.data:
 
         if 'image' in request.files:
-            print request.files
             for f in request.files.getlist('image'):
-                print f
                 if f.filename:
-                    print "hi"
                     filename = secure_filename(f.filename)
                     #path = os.path.join(app.config['UPLOADED_IMAGES_DEST'], filename)
                     block_blob_service.create_blob_from_stream('video', filename, f)
@@ -284,7 +263,6 @@ def addPics(user):
                     image = AuthImageGallery(image_filename= filename, image_path= url, person_id = person.person_id, training_status = 'false' )
                     db.session.add(image)
                     db.session.commit()
-                    print "done"
             faces =  db.session.query(Persons.username,AuthImageGallery.image_path, Persons.azure_id ).filter(Persons.person_id == AuthImageGallery.person_id, Persons.username == current_user.username, AuthImageGallery.training_status == 'false').all()
 
             for face in faces:
@@ -293,7 +271,6 @@ def addPics(user):
 
 
             code = trainFaces (current_user.username)
-            print code
             if code == 202:
                 resp = "Successfully Trained!"
                 flash ( resp , 'success')
@@ -318,18 +295,11 @@ def webcam(user):
 @app.route('/getWebcamPics/<user>', methods=['POST'])
 @login_required
 def getWebcamPics(user):
-    print user
     
     if request.method == "POST":
-        print "hey" 
         ret = request.files
-        #img = ret.to_dict(flat=False)
-        #print img
-        
         for f in request.files.getlist('webcam'):
-                print f
                 if f.filename:
-                    print "hi"
                     filename = secure_filename(f.filename)
                     time = str(datetime.now())
                     time = re.sub(r"\s+", '-', time)
@@ -340,13 +310,10 @@ def getWebcamPics(user):
                     url = config['azure-blob']['blob_url'] + "/" + filename
 
                     person = Persons.query.filter_by(person_id = user).first()
-                    print person 
                     image = AuthImageGallery(image_filename= filename, image_path= url, person_id = person.person_id, training_status = 'false' )
                     db.session.add(image)
                     db.session.commit()
-                    print "done"
-        
-        
+                   
 @app.route('/removePeople', methods=['GET', 'POST'])
 @login_required
 def removePeople():     
@@ -355,13 +322,14 @@ def removePeople():
     delPeople = []
     if request.method == "POST":
         delPeople = request.form.getlist('users')
-    print delPeople
+        print delPeople
     
     if delPeople:
         for id in delPeople:
             person = Persons.query.filter_by(person_id = id).first()
             response = deletePerson( current_user.username, person.azure_id)
-            flash('Deleted Successfully', 'success')
+            #print response
+            #flash('Deleted Successfully', 'success')
             db.session.delete(person)
             db.session.commit()
         flash('Deleted Successfully', 'success')
@@ -371,11 +339,11 @@ def removePeople():
 @app.route('/chart<date>', methods=['GET', 'POST'])
 @login_required
 def chart(date):
-    print date 
 
-    unauth = UnauthImageGallery.query.filter(UnauthImageGallery.timestamp.contains(date)).all()
-    print unauth
-
+    unauth = UnauthImageGallery.query.filter(UnauthImageGallery.timestamp.contains(date)).filter_by( username = current_user.username).all()
+    if not unauth: 
+        flash('No Security Breaches for selected date' , 'danger')
+        return redirect(url_for('dashboard'))
     hours = []
     
     for i in range (0, 24):
@@ -385,7 +353,17 @@ def chart(date):
         
         hour = img.timestamp[11:13]
         hours[int(hour)]+=1  
-    
-    print hours 
 
-    return render_template('chart.html' , hours = hours) 
+    return render_template('chart.html' , hours = hours , date = date) 
+
+@app.route('/unAuthDatePicker', methods=['GET', 'POST'])
+@login_required
+def unAuthDatePicker():
+    
+    form = DateForm()
+    
+    if form.validate_on_submit():
+        date = form.date.data
+        return redirect(url_for('unAuth' , date = date))
+
+    return render_template('date.html' , form = form)

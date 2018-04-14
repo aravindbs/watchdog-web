@@ -1,7 +1,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "bootstrap/utils.html" as utils %}
 {% extends "base.html" %}
-{% block title %} Dashboard {% endblock %}
+{% block title %} View Chart {% endblock %}
 {% block body %}
 
 
@@ -14,14 +14,16 @@
         {{ utils.flashed_messages() }}
         <div class="row">
           <div class="col-md-10 col-md-offset-2 col-sm-6 col-sm-offset-3">
-            <div class="card card-signup">
+            <div class="card card-signup content-left">
               
                 <div class="header header-info text-center">
                   <h4>Dashboard</h4>
                 </div>
-                <div class="chart-container" style="position: relative; height:40vh; width:50vw">
+                <div class="chart-container" style="position: centre; height:50vh; width:50vw">
                   <canvas id="myChart"></canvas>
               </div>
+              <a href="{{ url_for('unAuth' , date = date ) }}" class="btn btn-info btn-round text-center">View Faces</a>
+                        
             </div>
         </div>
     </div>
@@ -36,17 +38,44 @@ var ctx = document.getElementById("myChart");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange" , "Red", "Blue", "Yellow", "Green", "Purple", "Orange" , "Red", "Blue", "Yellow", "Green", "Purple", "Orange" , "Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: ["00:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00", "05:00-06:00" , "06:00-07:00", "07:00-08:00", "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00" , "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00" , "18:00-19:00", "19:00-20:00", "20:00-21:00", "21:00-22:00", "22:00-23:00", "23:00-00:00"],
         datasets: [{
-            label: '# of Votes',
-            data: [{{ hours[0] | safe }} , {{ hours[1] | safe }} , {{ hours[2] | safe }} , {{ hours[3] | safe }} , {{ hours[4] | safe }} , {{ hours[5] | safe }} , {{ hours[6] | safe }} , {{ hours[7] | safe }} , {{ hours[8] | safe }} , {{ hours[9] | safe }} , {{ hours[10] | safe }} , {{ hours[11] | safe }} , {{ hours[12] | safe }} , {{ hours[13] | safe }} , {{ hours[14] | safe }} , {{ hours[15] | safe }} , {{ hours[16] | safe }} , {{ hours[17] | safe }} , {{ hours[18] | safe }} , {{ hours[19] | safe }} , {{ hours[20] | safe }} , {{ hours[21] | safe }} , {{ hours[22] | safe }} , {{ hours[23] | safe }} ],
+            label: '# of Security Breaches',
+            data : [ {% for hour in hours %} {{ hour | safe }}, {% endfor %} ],
+            //data: [{{ hours[0] | safe }} , {{ hours[1] | safe }} , {{ hours[2] | safe }} , {{ hours[3] | safe }} , {{ hours[4] | safe }} , {{ hours[5] | safe }} , {{ hours[6] | safe }} , {{ hours[7] | safe }} , {{ hours[8] | safe }} , {{ hours[9] | safe }} , {{ hours[10] | safe }} , {{ hours[11] | safe }} , {{ hours[12] | safe }} , {{ hours[13] | safe }} , {{ hours[14] | safe }} , {{ hours[15] | safe }} , {{ hours[16] | safe }} , {{ hours[17] | safe }} , {{ hours[18] | safe }} , {{ hours[19] | safe }} , {{ hours[20] | safe }} , {{ hours[21] | safe }} , {{ hours[22] | safe }} , {{ hours[23] | safe }} ],
+            
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
                 'rgba(255, 206, 86, 0.2)',
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
                 'rgba(255, 159, 64, 0.2)'
+
             ],
             borderColor: [
                 'rgba(255,99,132,1)',
@@ -54,9 +83,27 @@ var myChart = new Chart(ctx, {
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
                 'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
                 'rgba(255, 159, 64, 1)'
             ],
-            borderWidth: 2
+            borderWidth: 3
         }]
     },
     options: {

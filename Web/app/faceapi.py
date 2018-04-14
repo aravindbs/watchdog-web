@@ -1,7 +1,4 @@
-
 import httplib, urllib, base64, json, yaml
-
-
 
 with open("config.yaml", "r") as f:
     config = yaml.load(f)
@@ -47,11 +44,12 @@ def deletePerson (GROUP_ID, PERSON_ID):
     conn = httplib.HTTPSConnection('westcentralus.api.cognitive.microsoft.com')
     conn.request("DELETE", "/face/v1.0/persongroups/%s/persons/%s" %(personGroupId, personId) , body, headers)
     response = conn.getresponse()
-    print response.status
-    data = response.read()
-    print (data)
+    #print "resonse status"
+    #print response
+    #data = response.read()
+    #print data
     conn.close()
-    return json.loads (data)
+    return response.status 
 
 
 
