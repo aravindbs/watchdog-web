@@ -372,17 +372,45 @@ def unAuthDatePicker():
     
     form = DateForm()
     
-    if form.validate_on_submit():
+    if form.submit2.data:
+        print "submit 2"
+        date = form.date.data
+        return redirect(url_for('unAuthObjects' , date = date))
+    elif form.submit1.data: 
+        print "submit 1"
         date = form.date.data
         return redirect(url_for('unAuth' , date = date))
 
     return render_template('date.html' , form = form)
+
+@app.route('/unAuthObjects<date>', methods=['GET', 'POST'])
+@login_required
+def unAuthObjects(date):
+    
+    print date 
+    pics = UnauthObjects.query.filter(UnauthObjects.timestamp.contains(date)).filter_by( username = current_user.username).all()
+    print pics 
+
+    if not pics: 
+        print "yes"
+        flash('No Security Breaches for selected date' , 'danger')
+        return redirect(url_for('dashboard'))
+    
+    for pic in pics: 
+        pic.timestamp = pic.timestamp[:16]
+    return render_template('UnAuthObjects.html', pics = pics)
 
 @app.route('/watchlist', methods=['GET', 'POST'])
 @login_required
 def watchlist():
     
     if request.method == "POST":
-        print request.form.getlist('watchlist')
+        watchlist = request.form.getlist('watchlist')
+        print str(watchlist)
+        obj = Watchlist(username = current_user.username , watchlist = str(watchlist))
+
+        db.session.add(obj)
+        db.session.commit() 
+        return redirect(url_for('dashboard'))
     
     return render_template('watchlist.html')

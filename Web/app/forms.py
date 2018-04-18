@@ -54,7 +54,8 @@ class EditImageGalleryForm(Form):
 
 class DateForm(Form): 
     date = DateField('Enter Date' , validators=[InputRequired()])
-    submit = SubmitField('Submit')
+    submit1 = SubmitField('View Unauthorized Faces')
+    submit2 = SubmitField('View Unauthorized Objects')
 
 class AddPersonForm(Form):
     name = StringField('Name' , validators = [InputRequired()])

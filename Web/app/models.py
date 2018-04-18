@@ -121,6 +121,16 @@ class UnauthObjects(UserMixin, db.Model):
     def __repr(self):
         return '<UnauthObjects :{}>'.format(self.username)
 
+class Watchlist(UserMixin, db.Model):
+    __tablename__= 'watchlist'
+
+    watchid = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(60), db.ForeignKey("users.username", ondelete='CASCADE'), nullable = True , unique = False)
+    watchlist = db.Column(db.Text , default = None, nullable = False )
+
+    def __repr(self):
+        return '<Watchlist :{}>'.format(self.username)
+
 
 @login_manager.user_loader
 def load_user(id):

@@ -29,7 +29,12 @@
                   <br><br><br>
                   <h4> View Activity Chart </h4>
                   <div class="col-md-offset-4 col-sm-offset-4 col-md-4 col-sm-4 content text-center">
-                {{ wtf.quick_form(form, button_map={'submit' : 'info'}) }}
+                    <form class="form form-horizontal" method="post" role="form">
+                      {{ form.hidden_tag() }}
+                      {{ wtf.form_errors(form, hiddens="only") }}
+                      {{ wtf.form_field(form.date) }}
+                      {{ wtf.form_field(form.submit1 , button_map={'submit1' : 'info'}) }}
+                    </form>
               </div>
               </div>
             </div>
