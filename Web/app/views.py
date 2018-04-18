@@ -124,7 +124,7 @@ def cameraDetails():
                 else: 
                     existing_camera.cdesc = CameraDescList[i]
                     db.session.commit()
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('watchlist'))
     return render_template('test2.html' , camera=camera, camcount=camcount )
 
 

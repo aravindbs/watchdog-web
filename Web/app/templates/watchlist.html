@@ -15,22 +15,51 @@
                 <div class="header header-info text-center">
                   <h4>Watchlist</h4>
                   </div>
-
+                  <div class="col-md-offset-2 col-sm-offset-2 text-left">
+                  <h4> Select the objects to track and get notified when detected </h4> <br>
+                </div>
                   <div class="col-md-4 col-sm-4 ">
-                       
-                        <form role="form" method="post">
-                        
-                            <input type="checkbox" id="person" name="watchlist" value="person"> Person  
-                         <input type="checkbox" id="car" name="watchlist" value="car"> Car    
-                           <input type="checkbox" id="vehicle" name="watchlist" value="vehicle"> Generic Vehicle  <br>
-                          <input type="checkbox" id="children" name="watchlist" value="children"> Children  <br>
-                         <input type="checkbox" id="animal" name="watchlist" value="animal"> Animals  <br>
-                        
-
+                        <div class="content text-left col-md-offset-1 col-sm-offset-1">
                             
+                            <form class="form form-horizontal" method="post" role="form">
+                                
+                        <table>
+                                <tr>
+                                  
+                                  <td align="left"><input type="checkbox" id="person" name="watchlist" value="person" /></td>
+                                  <td align="left">Person</td>
+                                </tr>
+                                <tr>
+                                 
+                                  <td align="left"><input type="checkbox" id="car" name="watchlist" value="car" /></td>
+                                  <td align="left">Car</td>
+                                </tr>
+
+                                <tr>
+                                  
+                                  <td align="left"><input type="checkbox" id="vehicle" name="watchlist" value="vehicle" /></td>
+                                  <td align="life">Generic Vehicles</td>
+                                </tr>
+
+                                <tr>
+                                  
+                                        <td align="left"><input type="checkbox" id="children" name="watchlist" value="children" /></td>
+                                        <td align="left">Children</td>
+                                      </tr>
+
+                                <tr>
+                            
+                                    <td align="left"><input type="checkbox" id="vehicle" name="watchlist" value="animal" /></td>
+                                    <td align="left">Animal</td>
+                                    </tr>
+
+
+
+                              </table>
                             
                             <button class="btn btn-info" type="submit" name="submit" value="submit">Submit</button> 
                         </form>
+                    </div>
                       </div>
             </div>
         </div>
@@ -38,6 +67,12 @@
     </div>
 </div>
         
+<style>
+   	form  { display: table;      }
+	p     { display: table-row;  }
+	label { display: table-cell; }
+	input { display: table-cell; }
+</style>
     
 
 {% endblock %}           
