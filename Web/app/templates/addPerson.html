@@ -16,8 +16,23 @@
                   <h4>Enter Person Details </h4>
                  
                 </div>
-                <div class="content text-left">
-                {{ wtf.quick_form(form , button_map={'submit' : 'info'}) }}
+                <div class="content text-left col-md-offset-1 col-sm-offset-1">
+                  
+                    <form class="form form-horizontal" method="post" role="form">
+                        {{ form.hidden_tag() }}
+                        {{ wtf.form_errors(form, hiddens="only") }}
+                      
+                        {{ wtf.form_field(form.name) }}
+                        {{ wtf.form_field(form.designation) }}
+                        <h5> Location to be authorized in </h5>
+                        {% for location in locations %}
+                       <input id="{{ location.cdesc }}" type="checkbox" name="ingredients[]" value="{{ location.cdesc }}" />
+                      <label for="{{ location.cdesc }}">{{ location.cdesc }}</label>
+                      <br />
+                       {% endfor %}
+                      {{ wtf.form_field(form.submit, button_map={'submit' : 'info'})  }}
+
+                      </form>
             </div>
             </div>
           </div>

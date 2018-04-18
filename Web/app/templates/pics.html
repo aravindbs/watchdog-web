@@ -27,10 +27,10 @@
                                     {{ form.hidden_tag() }}
                                     {{ form.image(multiple="multiple" ) }}
                                    <!-- {{ form.picture(class_="btn btn-info btn-round text-center") }}-->
-                                    {{ form.skip(class_="btn btn-info btn-round text-center") }}
+                                    {{ form.skip(class_="btn btn-info text-center") }}
                             </form>
                         
-                            <a href="{{ url_for('webcam', user=user) }}" class="btn btn-info btn-round text-center">Take Pictures with Webcam </a>          
+                            <a href="{{ url_for('webcam', user=user) }}" data-toggle="tooltip" title="Make sure to take multiple pictures in multiple angles." class="btn btn-info text-center">Take Pictures with Webcam </a>          
                     </div>
                 </div>
               </div>
@@ -40,7 +40,12 @@
 </div>
 </div>
 
-        
+<script>
+  $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();   
+  });
+  </script>
+  
 
 <style> 
 .floated_img

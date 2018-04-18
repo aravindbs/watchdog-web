@@ -108,8 +108,9 @@ def cameraDetails():
     camera = Camera.query.filter_by(username = current_user.username).all()
     camcount=len(camera)
     if request.method == 'POST':
-        if request.form['submit'] == 'Submit':
-            detailsList = request.form.getlist('myInputs[]')
+        if request.form['submit'] == 'submit':
+            detailsList = request.form.getlist('add-more[]')
+            print detailsList
             CameraNoList = detailsList[0::2]
             CameraDescList = detailsList[1::2]
             length = len(CameraNoList)
@@ -124,7 +125,7 @@ def cameraDetails():
                     existing_camera.cdesc = CameraDescList[i]
                     db.session.commit()
             return redirect(url_for('dashboard'))
-    return render_template('cameraDetails.html' , camera=camera, camcount=camcount )
+    return render_template('test2.html' , camera=camera, camcount=camcount )
 
 
 @app.route('/unAuth<date>' , methods = ['GET' , 'POST'])
@@ -178,16 +179,25 @@ def addPeople():
     
     form = AddPersonForm()
 
+    locations = Camera.query.filter_by(username = current_user.username)
+
     if form.validate_on_submit(): 
+        print request.form.getlist("ingredients[]")
         code = addPerson ( current_user.username, form.name.data, form.name.data)
         print "hey" 
         print code 
         add_person = Persons(person_name = form.name.data, username = current_user.username, azure_id = code["personId"])
         db.session.add(add_person)
         db.session.commit()
+        add_person = Persons.query.filter_by(person_name = form.name.data).first()
+        for loc in request.form.getlist("ingredients[]"):
+            add_location = Location(person_id = add_person.person_id , location = loc)
+            db.session.add(add_location)
+
+        db.session.commit()
         return redirect(url_for('addPics' , user = add_person.person_id))
         
-    return render_template('addPerson.html' , form = form)
+    return render_template('addPerson.html' , form = form , locations = locations)
 
 @app.route('/TrainFaces', methods=['GET', 'POST'])
 @login_required
@@ -263,7 +273,7 @@ def addPics(user):
                     image = AuthImageGallery(image_filename= filename, image_path= url, person_id = person.person_id, training_status = 'false' )
                     db.session.add(image)
                     db.session.commit()
-            faces =  db.session.query(Persons.username,AuthImageGallery.image_path, Persons.azure_id ).filter(Persons.person_id == AuthImageGallery.person_id, Persons.username == current_user.username, AuthImageGallery.training_status == 'false').all()
+            faces = db.session.query(Persons.username,AuthImageGallery.image_path, Persons.azure_id ).filter(Persons.person_id == AuthImageGallery.person_id, Persons.username == current_user.username, AuthImageGallery.training_status == 'false').all()
 
             for face in faces:
                 addFace(str(face[0]) , str(face[2]), str(face[1]))
@@ -367,3 +377,12 @@ def unAuthDatePicker():
         return redirect(url_for('unAuth' , date = date))
 
     return render_template('date.html' , form = form)
+
+@app.route('/watchlist', methods=['GET', 'POST'])
+@login_required
+def watchlist():
+    
+    if request.method == "POST":
+        print request.form.getlist('watchlist')
+    
+    return render_template('watchlist.html')

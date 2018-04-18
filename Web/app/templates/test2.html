@@ -1,0 +1,80 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Camera Details{% endblock %}
+{% block body %}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<br><br><br><br><br><br><br>
+<div class="container">
+        <div class="panel panel-default">
+          <div class="panel-body">
+                <form  class="form" method="post" role="form" >
+                        <div class="input-group control-group after-add-more">
+            {% if camera %}
+            {% for cam in camera%}
+                    
+                    <input type="text" name="add-more[]" class="form-control" placeholder="Enter Camera Number" value="{{cam.cno}}">
+                    <input type="text" name="add-more[]" class="form-control" placeholder="Enter Camera Location" value="{{cam.cdesc}}">
+                    
+            {% endfor%}
+ 
+            {% else %}
+                    
+                     <input type="text" name="add-more[]" class="form-control" placeholder="Enter Camera Number">
+                      <br>
+                     <input type="text" name="add-more[]" class="form-control" placeholder="Enter Camera Location">
+                            
+            {% endif %}
+                     
+                     <div class="input-group-btn"> 
+                              <button class="btn btn-success add-more" type="button"><i class="glyphicon glyphicon-plus"></i> Add</button>
+                            </div>
+                    </div>
+
+                    <input type="submit" value="submit" name="submit" class="btn btn-info" >
+           
+            
+              </form>
+              
+       
+              <!-- Copy Fields-These are the fields which we get through jquery and then add after the above input,-->
+              <div class="copy-fields hide">
+                <div class="control-group input-group" style="margin-top:10px">
+                  <input type="text" name="add-more[]" class="form-control" placeholder="Enter Camera Number">
+                  <br>
+                  <input type="text" name="add-more[]" class="form-control" placeholder="Enter Camera Location">
+                  
+                  <div class="input-group-btn"> 
+                    <button class="btn btn-danger remove" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+       
+      <script type="text/javascript">
+       
+          $(document).ready(function() {
+       
+          //here first get the contents of the div with name class copy-fields and add it to after "after-add-more" div class.
+            $(".add-more").click(function(){ 
+                var html = $(".copy-fields").html();
+                $(".after-add-more").after(html);
+            });
+      //here it will remove the current value of the remove button which has been pressed
+            $("body").on("click",".remove",function(){ 
+                $(this).parents(".control-group").remove();
+            });
+       
+          });
+       
+      </script>
+{% endblock %}
+
+
+

@@ -70,6 +70,15 @@ class Persons(UserMixin, db.Model):
     def __repr(self):
         return '<Persons :{}>'.format(self.username)
 
+class Location(UserMixin, db.Model):
+    __tablename__= 'location'
+    location_id = db.Column(db.Integer, primary_key = True)
+    person_id = db.Column(db.Integer, db.ForeignKey("persons.person_id", ondelete='CASCADE'), nullable = False)
+    location = db.Column(db.Text, default=None, nullable = False) 
+
+    def __repr(self):
+        return '<Location :{}>'.format(self.username)
+
 class AuthImageGallery(UserMixin, db.Model):
     __tablename__= 'authImageGallery'
     imgid = db.Column(db.Integer, primary_key=True)
@@ -80,6 +89,8 @@ class AuthImageGallery(UserMixin, db.Model):
 
     def __repr(self):
         return '<AuthImageGallery :{}>'.format(self.username)
+
+
 
 class UnauthImageGallery(UserMixin, db.Model):
     __tablename__= 'unauthImageGallery'
@@ -94,6 +105,21 @@ class UnauthImageGallery(UserMixin, db.Model):
 
     def __repr(self):
         return '<UnauthImageGallery :{}>'.format(self.username)
+
+class UnauthObjects(UserMixin, db.Model):
+    __tablename__= 'unauthObjects'
+
+    objid = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(60), db.ForeignKey("users.username", ondelete='CASCADE'), nullable = True , unique = False)
+    image_filename = db.Column(db.String(60), default= None, nullable= False)
+    image_path = db.Column(db.Text, default= None, nullable = False)
+    object_class = db.Column(db.Text, default=None, nullable = False)
+    timestamp = db.Column(db.Text, nullable = False)
+    cameraID = db.Column(db.Text, nullable = False)
+    cameraLocation = db.Column(db.Text, nullable = False)
+
+    def __repr(self):
+        return '<UnauthObjects :{}>'.format(self.username)
 
 
 @login_manager.user_loader

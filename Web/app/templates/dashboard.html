@@ -18,14 +18,17 @@
                 </div>
                 <div class="content text-center">
 
-                        <a href="{{ url_for('cameraDetails') }}" class="btn btn-info btn-round text-center">Edit Camera Details </a>
-                        <a href="{{ url_for('uploadImages') }}" class="btn btn-info btn-round text-center">Manage Authorized People </a>
-                        <a href="{{ url_for('unAuthDatePicker') }}" class="btn btn-info btn-round text-center">View Security Breaches </a>
-                </div>
+                        <a href="{{ url_for('cameraDetails') }}" class="btn btn-info  text-center">Edit Camera Details </a>
+                        <a href="{{ url_for('watchlist') }}" class="btn btn-info text-center">Edit WatchList </a>
+                        <br>
+                        <a href="{{ url_for('uploadImages') }}" class="btn btn-success  text-center">Manage Authorized People </a>
+                        <a href="{{ url_for('unAuthDatePicker') }}" class="btn btn-danger text-center">View Security Breaches </a>
+                        
+                      </div>
                 <div class=" content text-center">
                   <br><br><br>
                   <h4> View Activity Chart </h4>
-                  <div class="col-md-offset-4 col-md-4 col-sm-4 content text-center">
+                  <div class="col-md-offset-4 col-sm-offset-4 col-md-4 col-sm-4 content text-center">
                 {{ wtf.quick_form(form, button_map={'submit' : 'info'}) }}
               </div>
               </div>

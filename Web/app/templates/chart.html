@@ -19,9 +19,10 @@
                 <div class="header header-info text-center">
                   <h4>Dashboard</h4>
                 </div>
-                <div class="chart-container" style="position: centre; height:50vh; width:50vw">
+                <div class="chart-container" style="position: centre; height:60vh; width:70vw">
                   <canvas id="myChart"></canvas>
               </div>
+              <br><br><br>
               <a href="{{ url_for('unAuth' , date = date ) }}" class="btn btn-info btn-round text-center">View Faces</a>
                         
             </div>
@@ -69,12 +70,6 @@ var myChart = new Chart(ctx, {
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 255, 0.2)',
                 'rgba(255, 159, 64, 0.2)',
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
 
             ],
             borderColor: [
@@ -103,20 +98,33 @@ var myChart = new Chart(ctx, {
                 'rgba(153, 102, 255, 1)',
                 'rgba(255, 159, 64, 1)'
             ],
-            borderWidth: 3
+            borderWidth: 3,
         }]
     },
     options: {
         scales: {
-            yAxes: [{
+            xAxes: [{
                 ticks: {
-                    beginAtZero:true
+                    beginAtZero:true,
+                    autoSkip:false 
+                },
+                gridLines : {
+                    display : false,
                 }
             }]
         }
     }
 });
 </script>
+
+<style>
+
+   chart-container {
+  width: 100%;
+  height: auto;
+  overflow: auto
+}
+</style>
 
   
 {% endblock %}

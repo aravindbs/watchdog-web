@@ -58,7 +58,7 @@ class DateForm(Form):
 
 class AddPersonForm(Form):
     name = StringField('Name' , validators = [InputRequired()])
-    designation = StringField('Designation' , validators=[InputRequired()])
+    designation = StringField('Description' , validators=[InputRequired()])
     #location = SelectMultipleField('Location' , validators = [InputRequired()] , choices = locationchoices)
     submit = SubmitField('Submit')
 
