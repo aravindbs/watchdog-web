@@ -33,7 +33,7 @@
                       {{ form.hidden_tag() }}
                       {{ wtf.form_errors(form, hiddens="only") }}
                       {{ wtf.form_field(form.date) }}
-                      {{ wtf.form_field(form.submit1 , button_map={'submit1' : 'info'}) }}
+                      <button class="btn btn-info" type="submit" name="submit" value="submit">View</button>
                     </form>
               </div>
               </div>
